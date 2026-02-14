@@ -14,8 +14,8 @@
             margin: 40px auto 20px;
             position: relative;
             width: 100%;
-            max-width: 500px;
-            height: 320px;
+            max-width: 600px;
+            height: 380px;
             perspective: 1200px;
         }
 
@@ -36,19 +36,15 @@
             box-shadow: 0 25px 40px rgba(180, 70, 120, 0.3), 0 0 0 4px rgba(255, 255, 255, 0.8) inset;
             transition: transform 0.8s cubic-bezier(0.3, 0.8, 0.3, 1);
             opacity: 0;
-            animation: photoCycle 18s infinite;
+            animation: photoCycle 24s infinite;
             transform-origin: center center;
             backdrop-filter: blur(2px);
         }
 
-        .photo-slide:nth-child(1) { animation-delay: 0s; }
-        .photo-slide:nth-child(2) { animation-delay: 6s; }
-        .photo-slide:nth-child(3) { animation-delay: 12s; }
-
         @keyframes photoCycle {
-            0%, 20% { opacity: 0; transform: scale(0.92) rotate(-1deg); }
-            25%, 45% { opacity: 1; transform: scale(1) rotate(0deg); box-shadow: 0 30px 50px rgba(200, 80, 130, 0.4); }
-            50%, 70% { opacity: 0; transform: scale(0.96) rotate(2deg); }
+            0%, 8% { opacity: 0; transform: scale(0.92) rotate(-1deg); }
+            10%, 18% { opacity: 1; transform: scale(1) rotate(0deg); box-shadow: 0 30px 50px rgba(200, 80, 130, 0.4); }
+            20%, 28% { opacity: 0; transform: scale(0.96) rotate(2deg); }
             100% { opacity: 0; }
         }
 
@@ -74,16 +70,18 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(190, 60, 100, 0.7), transparent);
+            background: linear-gradient(to top, rgba(190, 60, 100, 0.8), transparent);
             color: white;
             padding: 30px 15px 15px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.2rem;
             text-shadow: 0 2px 5px rgba(0,0,0,0.3);
             opacity: 0;
             transition: opacity 0.4s;
             border-radius: 0 0 30px 30px;
             backdrop-filter: blur(3px);
+            text-align: center;
+            letter-spacing: 1px;
         }
 
         .photo-slide:hover .photo-caption {
@@ -148,6 +146,18 @@
             transform: scale(1.05);
             box-shadow: 0 12px 28px rgba(200, 70, 110, 0.4);
         }
+
+        .photo-counter {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #b34e71;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 5px 15px;
+            border-radius: 50px;
+            display: inline-block;
+            backdrop-filter: blur(4px);
+        }
     </style>
 </head>
 <body>
@@ -162,23 +172,12 @@
 
         <!-- Romantic Photo Gallery from "us" folder -->
         <div class="photo-gallery">
-            <div class="photo-frame">
-                <div class="photo-slide">
-                    <img src="us/photo1.jpg" alt="Us together 1" onerror="this.src='https://via.placeholder.com/500x320/ffd9e8/ff9ec0?text=Our+Beautiful+Memory'">
-                    <div class="photo-caption">💕 My favorite view</div>
-                </div>
-                <div class="photo-slide">
-                    <img src="us/photo2.jpg" alt="Us together 2" onerror="this.src='https://via.placeholder.com/500x320/ffd0e0/ff85b3?text=Perfect+Moments'">
-                    <div class="photo-caption">💖 With you, always</div>
-                </div>
-                <div class="photo-slide">
-                    <img src="us/photo3.jpg" alt="Us together 3" onerror="this.src='https://via.placeholder.com/500x320/ffe2ed/ff99bb?text=Our+Love+Story'">
-                    <div class="photo-caption">💗 Forever & always</div>
-                </div>
+            <div class="photo-frame" id="photoFrame">
+                <!-- Photos will be loaded dynamically by JavaScript -->
             </div>
         </div>
 
-        <!-- Heart decoration (auto-loads more images if exist) -->
+        <!-- Heart decoration -->
         <div class="heart-decoration" id="heartDeco">
             <span>💗</span>
             <span>💖</span>
@@ -190,6 +189,7 @@
         <p class="love-note" id="loveNote">Every photo with you is my favorite ✨</p>
         
         <p class="yes-message">You just made me the happiest person! 💕</p>
+        <div class="photo-counter" id="photoCounter">Loading our beautiful memories...</div>
 
         <button class="confetti-button" onclick="burstConfetti()" id="confettiBtn">
             ✨ Celebrate with confetti ✨
@@ -204,25 +204,119 @@
 
     <script src="yes-script.js"></script>
     <script>
-        // Additional romantic interactions for yes page
+        // Array of your actual photo filenames from the folder
+        const photoFilenames = [
+            "0aafcda2-205b-4334-a5cb-4ced4bf5a7b1.jpeg",
+            "100f0220-ecee-4ec8-9815-86ccb2728fc8.jpeg",
+            "15e16481-7398-46bd-a555-8c333edea3c1.jpeg",
+            "2f4260a4-b95d-4546-9e66-849d334f1db2.jpeg",
+            "339e12ea-b8b0-47b8-91c8-72af67cebd85.jpeg",
+            "6e7b95a8-c4e1-4eb2-bc57-b88dfc325775.jpeg",
+            "82e84543-eec9-48e2-862e-cbb24442981e.jpeg",
+            "8e589999-1ea4-4787-a86b-95c86f765cbc.jpeg",
+            "90c3a3b7-1f06-47e6-a1f2-85708be2355f.jpeg",
+            "9a576b1f-14e2-4e30-afc2-3d0ce79d0798.jpeg"
+        ];
+
+        // Romantic captions for each photo
+        const captions = [
+            "My favorite view 💕",
+            "Perfect moments 💖",
+            "Our love story 💗",
+            "Forever & always 💘",
+            "You & me 💝",
+            "Beautiful together 💞",
+            "Heart full of love 💓",
+            "My happy place 💗",
+            "Dream come true 💖",
+            "Endless love 💕"
+        ];
+
+        // Load photos into gallery
+        function loadPhotos() {
+            const photoFrame = document.getElementById('photoFrame');
+            const photoCounter = document.getElementById('photoCounter');
+            let loadedCount = 0;
+            
+            // Clear existing content
+            photoFrame.innerHTML = '';
+            
+            // Create photo slides
+            photoFilenames.forEach((filename, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'photo-slide';
+                
+                // Create image element
+                const img = new Image();
+                img.src = `us/${filename}`;
+                img.alt = `Us together ${index + 1}`;
+                
+                // Handle successful load
+                img.onload = function() {
+                    loadedCount++;
+                    photoCounter.innerHTML = `📸 ${loadedCount} beautiful memories loaded`;
+                    
+                    // Add confetti celebration when all photos load
+                    if (loadedCount === photoFilenames.length) {
+                        setTimeout(() => {
+                            confetti({
+                                particleCount: 50,
+                                spread: 70,
+                                origin: { y: 0.6 },
+                                colors: ['#ff8ab5', '#ffb3c6', '#fb6f9e']
+                            });
+                            photoCounter.innerHTML = `📸 ${loadedCount} beautiful memories ❤️`;
+                        }, 500);
+                    }
+                };
+                
+                // Handle error - use placeholder
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/600x380/ffd9e8/ff9ec0?text=Our+Beautiful+Memory';
+                    loadedCount++;
+                    if (loadedCount === photoFilenames.length) {
+                        photoCounter.innerHTML = `✨ ${loadedCount} memories (with love)`;
+                    }
+                };
+                
+                // Create caption
+                const caption = document.createElement('div');
+                caption.className = 'photo-caption';
+                caption.textContent = captions[index % captions.length];
+                
+                // Assemble slide
+                slide.appendChild(img);
+                slide.appendChild(caption);
+                
+                // Set animation delay
+                const totalSlides = photoFilenames.length;
+                const cycleDuration = totalSlides * 3; // 3 seconds per photo
+                slide.style.animation = `photoCycle ${cycleDuration}s infinite`;
+                slide.style.animationDelay = `${index * 3}s`;
+                
+                photoFrame.appendChild(slide);
+            });
+        }
+
+        // Burst confetti function
         function burstConfetti() {
             confetti({
-                particleCount: 120,
-                spread: 80,
+                particleCount: 150,
+                spread: 100,
                 origin: { y: 0.6 },
                 colors: ['#ff8ab5', '#ffb3c6', '#ffd9e8', '#fb6f9e', '#ffffff']
             });
             
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     confetti({
                         particleCount: 40,
-                        angle: 60 + i * 30,
-                        spread: 55,
-                        origin: { x: 0.3 + i * 0.2, y: 0.5 },
+                        angle: 30 + i * 30,
+                        spread: 60,
+                        origin: { x: 0.2 + i * 0.15, y: 0.5 },
                         colors: ['#ffa5c3', '#ffc1d4', '#ffdbea']
                     });
-                }, i * 150);
+                }, i * 120);
             }
 
             // Change love note randomly
@@ -231,67 +325,15 @@
                 "You're my forever Valentine 💘",
                 "I love you more every day 💗",
                 "Us against the world 🌎",
-                "My favorite person 🤍"
+                "My favorite person 🤍",
+                "10 perfect moments with you 💕",
+                "Our story is my favorite 📖"
             ];
             const randomNote = notes[Math.floor(Math.random() * notes.length)];
             document.getElementById('loveNote').innerText = randomNote;
-
-            // Make hearts bounce
-            document.getElementById('heartDeco').style.animation = 'none';
-            setTimeout(() => {
-                document.getElementById('heartDeco').style.animation = 'pulseHearts 2.5s ease-in-out infinite';
-            }, 10);
         }
 
-        // Load any additional photos beyond 3 dynamically (if exist)
-        function loadMorePhotos() {
-            const photoFolder = 'us/';
-            const possiblePhotos = 10; // check up to 10 photos
-            const gallery = document.querySelector('.photo-frame');
-            let existingSlides = document.querySelectorAll('.photo-slide').length;
-            
-            // We'll try to load photo4.jpg to photo10.jpg
-            for (let i = existingSlides + 1; i <= possiblePhotos; i++) {
-                const img = new Image();
-                img.src = `us/photo${i}.jpg`;
-                img.onload = function() {
-                    // if image loads, add it to gallery
-                    const newSlide = document.createElement('div');
-                    newSlide.className = 'photo-slide';
-                    newSlide.style.animation = `photoCycle ${18 + i*0.5}s infinite`;
-                    newSlide.style.animationDelay = `${(i-1) * 6}s`;
-                    newSlide.innerHTML = `
-                        <img src="us/photo${i}.jpg" alt="Us together ${i}">
-                        <div class="photo-caption">💕 Beautiful us #${i}</div>
-                    `;
-                    gallery.appendChild(newSlide);
-                    
-                    // reorder animations smoothly
-                    const slides = document.querySelectorAll('.photo-slide');
-                    slides.forEach((slide, index) => {
-                        slide.style.animation = `photoCycle ${slides.length * 6}s infinite`;
-                        slide.style.animationDelay = `${index * 6}s`;
-                    });
-                }
-            }
-        }
-
-        // Try to load extra photos after page loads
-        window.addEventListener('load', function() {
-            setTimeout(loadMorePhotos, 500);
-            
-            // Gentle confetti burst on page load
-            setTimeout(() => {
-                confetti({
-                    particleCount: 70,
-                    spread: 100,
-                    origin: { y: 0.5 },
-                    colors: ['#ff80a5', '#ffb3c6', '#ffccdd']
-                });
-            }, 300);
-        });
-
-        // Music toggle function (ensure it's defined)
+        // Music toggle function
         function toggleMusic() {
             const music = document.getElementById('bg-music');
             const toggleBtn = document.getElementById('music-toggle');
@@ -306,17 +348,32 @@
             }
         }
 
-        // Add touch of romance - cycle love note every 10 seconds
+        // Load photos when page loads
+        window.addEventListener('load', function() {
+            loadPhotos();
+            
+            // Welcome confetti
+            setTimeout(() => {
+                confetti({
+                    particleCount: 80,
+                    spread: 120,
+                    origin: { y: 0.5 },
+                    colors: ['#ff80a5', '#ffb3c6', '#ffccdd']
+                });
+            }, 500);
+        });
+
+        // Rotate love notes every 8 seconds
         setInterval(() => {
-            if (Math.random() > 0.6) { // 40% chance
-                burstConfetti(); // surprise confetti
-            } else {
+            if (Math.random() > 0.5) {
                 const notes = [
                     "You're my dream come true 💭",
                     "My heart is yours 💗",
                     "Always and forever 💫",
                     "Best decision ever ✅",
-                    "My love for you grows 🌹"
+                    "My love for you grows 🌹",
+                    "10 reasons to smile 😊",
+                    "Each photo tells our story 📖"
                 ];
                 document.getElementById('loveNote').innerText = 
                     notes[Math.floor(Math.random() * notes.length)];
