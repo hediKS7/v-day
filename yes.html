@@ -8,6 +8,147 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Additional romantic gallery styles - keeps same structure */
+        .photo-gallery {
+            margin: 40px auto 20px;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 320px;
+            perspective: 1200px;
+        }
+
+        .photo-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: floatPhoto 8s ease-in-out infinite;
+        }
+
+        .photo-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 40px rgba(180, 70, 120, 0.3), 0 0 0 4px rgba(255, 255, 255, 0.8) inset;
+            transition: transform 0.8s cubic-bezier(0.3, 0.8, 0.3, 1);
+            opacity: 0;
+            animation: photoCycle 18s infinite;
+            transform-origin: center center;
+            backdrop-filter: blur(2px);
+        }
+
+        .photo-slide:nth-child(1) { animation-delay: 0s; }
+        .photo-slide:nth-child(2) { animation-delay: 6s; }
+        .photo-slide:nth-child(3) { animation-delay: 12s; }
+
+        @keyframes photoCycle {
+            0%, 20% { opacity: 0; transform: scale(0.92) rotate(-1deg); }
+            25%, 45% { opacity: 1; transform: scale(1) rotate(0deg); box-shadow: 0 30px 50px rgba(200, 80, 130, 0.4); }
+            50%, 70% { opacity: 0; transform: scale(0.96) rotate(2deg); }
+            100% { opacity: 0; }
+        }
+
+        @keyframes floatPhoto {
+            0%, 100% { transform: translateY(0) rotate(0.5deg); }
+            50% { transform: translateY(-12px) rotate(-0.5deg); }
+        }
+
+        .photo-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 5s ease;
+        }
+
+        .photo-slide:hover img {
+            transform: scale(1.05);
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(190, 60, 100, 0.7), transparent);
+            color: white;
+            padding: 30px 15px 15px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.4s;
+            border-radius: 0 0 30px 30px;
+            backdrop-filter: blur(3px);
+        }
+
+        .photo-slide:hover .photo-caption {
+            opacity: 1;
+        }
+
+        .heart-decoration {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0 10px;
+            font-size: 2rem;
+            filter: drop-shadow(0 4px 8px #ffa5c0);
+            animation: pulseHearts 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseHearts {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .love-note {
+            background: rgba(255, 220, 235, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 100px;
+            padding: 14px 35px;
+            margin: 25px auto 10px;
+            display: inline-block;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #b63b6b;
+            border: 2px solid white;
+            box-shadow: 0 8px 20px rgba(190, 80, 110, 0.25);
+            transform: rotate(-0.5deg);
+            animation: gentleFloat 4s ease infinite;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: rotate(-0.5deg) translateY(0); }
+            50% { transform: rotate(0.5deg) translateY(-5px); }
+        }
+
+        .confetti-button {
+            background: none;
+            border: 3px dashed #ff98bb;
+            border-radius: 60px;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #b34571;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(240, 130, 160, 0.3);
+        }
+
+        .confetti-button:hover {
+            background: #ffb6d1;
+            border: 3px solid white;
+            color: #9e2f5a;
+            transform: scale(1.05);
+            box-shadow: 0 12px 28px rgba(200, 70, 110, 0.4);
+        }
+    </style>
 </head>
 <body>
     <div class="hearts-bg"></div>
@@ -19,7 +160,40 @@
             <img id="cat-gif" src="https://media.tenor.com/eNHbizSfVb0AAAAj/lovemode-cute.gif" alt="celebrating">
         </div>
 
+        <!-- Romantic Photo Gallery from "us" folder -->
+        <div class="photo-gallery">
+            <div class="photo-frame">
+                <div class="photo-slide">
+                    <img src="us/photo1.jpg" alt="Us together 1" onerror="this.src='https://via.placeholder.com/500x320/ffd9e8/ff9ec0?text=Our+Beautiful+Memory'">
+                    <div class="photo-caption">💕 My favorite view</div>
+                </div>
+                <div class="photo-slide">
+                    <img src="us/photo2.jpg" alt="Us together 2" onerror="this.src='https://via.placeholder.com/500x320/ffd0e0/ff85b3?text=Perfect+Moments'">
+                    <div class="photo-caption">💖 With you, always</div>
+                </div>
+                <div class="photo-slide">
+                    <img src="us/photo3.jpg" alt="Us together 3" onerror="this.src='https://via.placeholder.com/500x320/ffe2ed/ff99bb?text=Our+Love+Story'">
+                    <div class="photo-caption">💗 Forever & always</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heart decoration (auto-loads more images if exist) -->
+        <div class="heart-decoration" id="heartDeco">
+            <span>💗</span>
+            <span>💖</span>
+            <span>💘</span>
+            <span>💝</span>
+            <span>💞</span>
+        </div>
+
+        <p class="love-note" id="loveNote">Every photo with you is my favorite ✨</p>
+        
         <p class="yes-message">You just made me the happiest person! 💕</p>
+
+        <button class="confetti-button" onclick="burstConfetti()" id="confettiBtn">
+            ✨ Celebrate with confetti ✨
+        </button>
     </div>
 
     <audio id="bg-music" loop>
@@ -29,5 +203,125 @@
     <button id="music-toggle" onclick="toggleMusic()" title="Toggle music">🔊</button>
 
     <script src="yes-script.js"></script>
+    <script>
+        // Additional romantic interactions for yes page
+        function burstConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#ff8ab5', '#ffb3c6', '#ffd9e8', '#fb6f9e', '#ffffff']
+            });
+            
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 40,
+                        angle: 60 + i * 30,
+                        spread: 55,
+                        origin: { x: 0.3 + i * 0.2, y: 0.5 },
+                        colors: ['#ffa5c3', '#ffc1d4', '#ffdbea']
+                    });
+                }, i * 150);
+            }
+
+            // Change love note randomly
+            const notes = [
+                "Every moment with you is magic ✨",
+                "You're my forever Valentine 💘",
+                "I love you more every day 💗",
+                "Us against the world 🌎",
+                "My favorite person 🤍"
+            ];
+            const randomNote = notes[Math.floor(Math.random() * notes.length)];
+            document.getElementById('loveNote').innerText = randomNote;
+
+            // Make hearts bounce
+            document.getElementById('heartDeco').style.animation = 'none';
+            setTimeout(() => {
+                document.getElementById('heartDeco').style.animation = 'pulseHearts 2.5s ease-in-out infinite';
+            }, 10);
+        }
+
+        // Load any additional photos beyond 3 dynamically (if exist)
+        function loadMorePhotos() {
+            const photoFolder = 'us/';
+            const possiblePhotos = 10; // check up to 10 photos
+            const gallery = document.querySelector('.photo-frame');
+            let existingSlides = document.querySelectorAll('.photo-slide').length;
+            
+            // We'll try to load photo4.jpg to photo10.jpg
+            for (let i = existingSlides + 1; i <= possiblePhotos; i++) {
+                const img = new Image();
+                img.src = `us/photo${i}.jpg`;
+                img.onload = function() {
+                    // if image loads, add it to gallery
+                    const newSlide = document.createElement('div');
+                    newSlide.className = 'photo-slide';
+                    newSlide.style.animation = `photoCycle ${18 + i*0.5}s infinite`;
+                    newSlide.style.animationDelay = `${(i-1) * 6}s`;
+                    newSlide.innerHTML = `
+                        <img src="us/photo${i}.jpg" alt="Us together ${i}">
+                        <div class="photo-caption">💕 Beautiful us #${i}</div>
+                    `;
+                    gallery.appendChild(newSlide);
+                    
+                    // reorder animations smoothly
+                    const slides = document.querySelectorAll('.photo-slide');
+                    slides.forEach((slide, index) => {
+                        slide.style.animation = `photoCycle ${slides.length * 6}s infinite`;
+                        slide.style.animationDelay = `${index * 6}s`;
+                    });
+                }
+            }
+        }
+
+        // Try to load extra photos after page loads
+        window.addEventListener('load', function() {
+            setTimeout(loadMorePhotos, 500);
+            
+            // Gentle confetti burst on page load
+            setTimeout(() => {
+                confetti({
+                    particleCount: 70,
+                    spread: 100,
+                    origin: { y: 0.5 },
+                    colors: ['#ff80a5', '#ffb3c6', '#ffccdd']
+                });
+            }, 300);
+        });
+
+        // Music toggle function (ensure it's defined)
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const toggleBtn = document.getElementById('music-toggle');
+            if (music.paused) {
+                music.play().catch(e => console.log('Autoplay prevented:', e));
+                toggleBtn.innerText = '🔊';
+                toggleBtn.style.color = '#b34e71';
+            } else {
+                music.pause();
+                toggleBtn.innerText = '🔈';
+                toggleBtn.style.color = '#999';
+            }
+        }
+
+        // Add touch of romance - cycle love note every 10 seconds
+        setInterval(() => {
+            if (Math.random() > 0.6) { // 40% chance
+                burstConfetti(); // surprise confetti
+            } else {
+                const notes = [
+                    "You're my dream come true 💭",
+                    "My heart is yours 💗",
+                    "Always and forever 💫",
+                    "Best decision ever ✅",
+                    "My love for you grows 🌹"
+                ];
+                document.getElementById('loveNote').innerText = 
+                    notes[Math.floor(Math.random() * notes.length)];
+            }
+        }, 8000);
+    </script>
 </body>
 </html>
