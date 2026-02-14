@@ -2,7 +2,7 @@
 
 A fun, interactive Valentine's Day page where the "Yes" button grows bigger every time they click "No" — with falling hearts, cute GIFs, music, and playful toast messages. Built with pure HTML, CSS, and JavaScript.
 
-**Live demo:** [heduks7.github.io/v-day]([ediks7.github.io/v-day/](https://hediks7.github.io/v-day/))
+**Live demo:** [hediks7.github.io/v-day]([hediks7.github.io/v-day/](https://hediks7.github.io/v-day/))
 
 
 ---
